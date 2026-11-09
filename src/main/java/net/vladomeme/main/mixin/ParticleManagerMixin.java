@@ -19,11 +19,14 @@ public abstract class ParticleManagerMixin {
 
 	@Unique final LDPConfig config = LDPConfig.INSTANCE;
 
+	//Changing render state to do translucency for normally opaque particles
 	@WrapOperation(method = "renderParticles", at = @At(value = "INVOKE",
 			target = "Lnet/minecraft/client/particle/ParticleTextureSheet;begin(Lnet/minecraft/client/render/Tessellator;Lnet/minecraft/client/texture/TextureManager;)Lnet/minecraft/client/render/BufferBuilder;"))
 	private BufferBuilder ldp$renderParticles$changeRenderState(ParticleTextureSheet instance, Tessellator tessellator, TextureManager textureManager, Operation<BufferBuilder> original) {
 		if (config.enabled && !MinecraftClient.isFabulousGraphicsOrBetter()) {
-			return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT.begin(tessellator, textureManager);
+			if (instance != ParticleTextureSheet.TERRAIN_SHEET) {
+				return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT.begin(tessellator, textureManager);
+			}
 		}
 		return original.call(instance, tessellator, textureManager);
 	}
