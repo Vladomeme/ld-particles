@@ -18,14 +18,31 @@ import org.spongepowered.asm.mixin.injection.At;
 public abstract class ParticleManagerMixin {
 
 	@Unique final LDPConfig config = LDPConfig.INSTANCE;
+	@Unique boolean changedSheet;
 
+	//Changing render state to do translucency for normally opaque particles
 	@WrapOperation(method = "renderParticles", at = @At(value = "INVOKE",
-			target = "Lnet/minecraft/client/particle/ParticleTextureSheet;begin(Lnet/minecraft/client/render/Tessellator;Lnet/minecraft/client/texture/TextureManager;)Lnet/minecraft/client/render/BufferBuilder;"))
-	private BufferBuilder ldp$renderParticles$changeRenderState(ParticleTextureSheet instance, Tessellator tessellator, TextureManager textureManager, Operation<BufferBuilder> original) {
+			target = "Lnet/minecraft/client/particle/ParticleTextureSheet;begin(Lnet/minecraft/client/render/BufferBuilder;Lnet/minecraft/client/texture/TextureManager;)V"))
+	private void ldp$renderParticles$changeRenderState(ParticleTextureSheet instance, BufferBuilder bufferBuilder, TextureManager textureManager, Operation<Void> original) {
 		if (config.enabled && !MinecraftClient.isFabulousGraphicsOrBetter()) {
-			return ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT.begin(tessellator, textureManager);
+			if (instance != ParticleTextureSheet.TERRAIN_SHEET) {
+				ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT.begin(bufferBuilder, textureManager);
+				changedSheet = true;
+				return;
+			}
 		}
-		return original.call(instance, tessellator, textureManager);
+		original.call(instance, bufferBuilder, textureManager);
+	}
+
+	//Call draw method on the right particle sheet after switching
+	@WrapOperation(method = "renderParticles", at = @At(value = "INVOKE",
+			target = "Lnet/minecraft/client/particle/ParticleTextureSheet;draw(Lnet/minecraft/client/render/Tessellator;)V"))
+	private void ldp$renderParticles$draw(ParticleTextureSheet instance, Tessellator tessellator, Operation<Void> original) {
+		if (changedSheet) {
+			ParticleTextureSheet.PARTICLE_SHEET_TRANSLUCENT.draw(tessellator);
+			changedSheet = false;
+		}
+		else original.call(instance, tessellator);
 	}
 
 	@WrapOperation(method = "renderParticles", at = @At(value = "INVOKE",

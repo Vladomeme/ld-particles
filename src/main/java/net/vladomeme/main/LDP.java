@@ -18,7 +18,9 @@ public class LDP implements ClientModInitializer {
     private String getLoadMessage() {
         String[] messages = new String[]{
                 "What does LD stand for?",
-                "Can't see shit in this mist?"
+                "Can't see shit in this mist?",
+                "Inspired by Particle Visor made by sylvxa!",
+                "Try Monumenta! server.playmonumenta.com"
         };
         return messages[ThreadLocalRandom.current().nextInt(messages.length)];
     }
