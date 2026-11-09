@@ -31,7 +31,7 @@
     "yet_another_config_lib_v3": "*",
     "fabricloader": ">=0.14.21",
     "fabric": "*",
-    "minecraft": "*",
+    "minecraft": "~1.21.1",
     "java": ">=17"
   }
 }
