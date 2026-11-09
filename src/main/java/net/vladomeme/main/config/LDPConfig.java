@@ -26,6 +26,7 @@ public class LDPConfig {
     public float maxOpacity = 1f;
     public double fadeStartRange = 1d;
     public double fadeEndRange = 3d;
+    public boolean renderNearbyParticles = false;
     public boolean useInThirdPerson = false;
     public boolean limitEffectRange = false;
     public double effectRange = 10d;
@@ -127,6 +128,13 @@ public class LDPConfig {
                                         newVal -> fadeEndRange = (newVal >= fadeStartRange ? newVal : fadeStartRange + 0.1d))
                                 .controller(option -> DoubleFieldControllerBuilder.create(option)
                                         .min(0d).formatValue(value -> Text.of(decimalFormat.format(value)))).build())
+
+                        .option(Option.<Boolean>createBuilder()
+                                .name(Text.literal("Render nearby particles"))
+                                .description(OptionDescription.of(Text.literal(
+                                        "Particles within fade start range are rendered at minimal opacity.")))
+                                .binding(false, () -> renderNearbyParticles, newVal -> renderNearbyParticles = newVal)
+                                .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.literal("Enable in third person"))
