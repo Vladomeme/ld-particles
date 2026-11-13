@@ -33,7 +33,6 @@ public class LDPConfig {
 
     public transient double fadeStartRangeSquared;
     public transient double fadeEndRangeSquared;
-    public transient double effectRangeSquared;
     public transient float opacityLengthMagicNumber;
 
     private static final File FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), "ld-particles.json");
@@ -80,8 +79,7 @@ public class LDPConfig {
     private void onUpdate() {
         fadeStartRangeSquared = fadeStartRange * fadeStartRange;
         fadeEndRangeSquared = fadeEndRange * fadeEndRange;
-        effectRangeSquared = effectRange * effectRange;
-        opacityLengthMagicNumber = (float) ((fadeEndRangeSquared - fadeStartRangeSquared) / (maxOpacity - minOpacity));
+        opacityLengthMagicNumber = (float) (1 / ((fadeEndRangeSquared - fadeStartRangeSquared) / (maxOpacity - minOpacity)));
     }
 
     public Screen create(Screen parent) {
@@ -151,7 +149,7 @@ public class LDPConfig {
                         .option(Option.<Double>createBuilder()
                                 .name(Text.literal("Effect range"))
                                 .description(OptionDescription.of(Text.literal(
-                                        "If limit (above option) is enabled, particles outside of this range would ignore max opacity option.")))
+                                        "If limit (above option) is enabled, particles outside of this range (planar) would ignore max opacity option.")))
                                 .binding(10d, () -> effectRange, newVal -> effectRange = newVal)
                                 .controller(option -> DoubleFieldControllerBuilder.create(option)
                                         .min(0d).formatValue(value -> Text.of(decimalFormat.format(value)))).build())

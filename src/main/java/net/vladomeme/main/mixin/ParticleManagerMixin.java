@@ -40,25 +40,45 @@ public abstract class ParticleManagerMixin {
 		}
 
 		Vec3d cameraPos = camera.getPos();
-		double distanceX = particle.x - cameraPos.x;
-		double distanceY = particle.y - cameraPos.y;
-		double distanceZ = particle.z - cameraPos.z;
+		double distanceX = Math.abs(particle.x - cameraPos.x);
+		double distanceY = Math.abs(particle.y - cameraPos.y);
+		double distanceZ = Math.abs(particle.z - cameraPos.z);
+
+		//planar check for particles outside of fade range
+		if (distanceX > config.fadeEndRange || distanceZ > config.fadeEndRange || distanceY > config.fadeEndRange) {
+			if (particle.alpha > config.maxOpacity) {
+				//range not limited
+				if (!config.limitEffectRange) {
+					callWithOpacity(particle, vertexConsumer, camera, delta, original, config.maxOpacity);
+					return;
+				}
+				//range limited, outside of range
+				else if (distanceX > config.effectRange || distanceZ > config.effectRange || distanceY > config.effectRange) {
+					original.call(particle, vertexConsumer, camera, delta);
+					return;
+				}
+				//within range
+				callWithOpacity(particle, vertexConsumer, camera, delta, original, config.maxOpacity);
+				return;
+			}
+			original.call(particle, vertexConsumer, camera, delta);
+			return;
+		}
+
 		double distanceSquared = distanceX * distanceX + distanceY * distanceY + distanceZ * distanceZ;
 
-		//closer than start range
+		//within fade start range
 		if (distanceSquared < config.fadeStartRangeSquared) {
 			if (config.renderNearbyParticles)
 				callWithOpacity(particle, vertexConsumer, camera, delta, original, config.minOpacity);
 			return;
 		}
 
-		//further than end range
+		//outside of fade range
 		if (distanceSquared > config.fadeEndRangeSquared) {
-			if (!config.limitEffectRange || distanceSquared <= config.effectRangeSquared) {
-				if (particle.alpha > config.maxOpacity) {
-					callWithOpacity(particle, vertexConsumer, camera, delta, original, config.maxOpacity);
-					return;
-				}
+			if (particle.alpha > config.maxOpacity) {
+				callWithOpacity(particle, vertexConsumer, camera, delta, original, Math.min(particle.alpha, config.maxOpacity));
+				return;
 			}
 			original.call(particle, vertexConsumer, camera, delta);
 			return;
@@ -70,7 +90,7 @@ public abstract class ParticleManagerMixin {
 			return;
 		}
 		if (particle.alpha > config.minOpacity) {
-			float opacity = config.minOpacity + ((float) (distanceSquared - config.fadeStartRangeSquared)) / config.opacityLengthMagicNumber;
+			float opacity = config.minOpacity + ((float) (distanceSquared - config.fadeStartRangeSquared)) * config.opacityLengthMagicNumber;
 			if (particle.alpha > opacity) {
 				callWithOpacity(particle, vertexConsumer, camera, delta, original, opacity);
 				return;
