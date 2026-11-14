@@ -41,7 +41,7 @@ public abstract class ParticleManagerMixin {
 
 		Vec3d cameraPos = camera.getPos();
 		double distanceX = Math.abs(particle.x - cameraPos.x);
-		double distanceY = Math.abs(particle.y - cameraPos.y);
+		double distanceY = Math.abs(particle.y - cameraPos.y) * config.horizontalScaleReverse;
 		double distanceZ = Math.abs(particle.z - cameraPos.z);
 
 		//planar check for particles outside of fade range

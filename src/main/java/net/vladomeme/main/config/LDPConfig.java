@@ -26,6 +26,7 @@ public class LDPConfig {
     public float maxOpacity = 1f;
     public double fadeStartRange = 1d;
     public double fadeEndRange = 3d;
+    public double horizontalScale = 1d;
     public boolean renderNearbyParticles = false;
     public boolean useInThirdPerson = false;
     public boolean limitEffectRange = false;
@@ -33,6 +34,7 @@ public class LDPConfig {
 
     public transient double fadeStartRangeSquared;
     public transient double fadeEndRangeSquared;
+    public transient double horizontalScaleReverse;
     public transient float opacityLengthMagicNumber;
 
     private static final File FILE = new File(FabricLoader.getInstance().getConfigDir().toFile(), "ld-particles.json");
@@ -79,6 +81,7 @@ public class LDPConfig {
     private void onUpdate() {
         fadeStartRangeSquared = fadeStartRange * fadeStartRange;
         fadeEndRangeSquared = fadeEndRange * fadeEndRange;
+        horizontalScaleReverse = horizontalScale == 1d ? 1d : 1d / horizontalScale;
         opacityLengthMagicNumber = (float) (1 / ((fadeEndRangeSquared - fadeStartRangeSquared) / (maxOpacity - minOpacity)));
     }
 
@@ -126,6 +129,14 @@ public class LDPConfig {
                                         newVal -> fadeEndRange = (newVal >= fadeStartRange ? newVal : fadeStartRange + 0.1d))
                                 .controller(option -> DoubleFieldControllerBuilder.create(option)
                                         .min(0d).formatValue(value -> Text.of(decimalFormat.format(value)))).build())
+
+                        .option(Option.<Double>createBuilder()
+                                .name(Text.literal("Horizontal scaling"))
+                                .description(OptionDescription.of(Text.literal(
+                                        "Scaling for fade range on the Y axis.")))
+                                .binding(1d, () -> horizontalScale, newVal -> horizontalScale = newVal)
+                                .controller(option -> DoubleSliderControllerBuilder.create(option)
+                                        .range(0d, 2d).step(0.05d).formatValue(value -> Text.of(decimalFormat.format(value)))).build())
 
                         .option(Option.<Boolean>createBuilder()
                                 .name(Text.literal("Render nearby particles"))
