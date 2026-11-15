@@ -22,6 +22,7 @@ import java.text.DecimalFormat;
 public class LDPConfig {
 
     public boolean enabled = true;
+    public int refreshRate = 0;
     public float minOpacity = 0.2f;
     public float maxOpacity = 1f;
     public double fadeStartRange = 1d;
@@ -96,6 +97,14 @@ public class LDPConfig {
                                 .name(Text.literal("Enable"))
                                 .binding(true, () -> enabled, newVal -> enabled = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
+
+                        .option(Option.<Integer>createBuilder()
+                                .name(Text.literal("Refresh rate"))
+                                .description(OptionDescription.of(Text.literal("Number of frames between opacity updates.")))
+                                .binding(0, () -> refreshRate, newVal -> refreshRate = newVal)
+                                .controller(option -> IntegerSliderControllerBuilder.create(option)
+                                        .range(0, 30).step(1).formatValue(value -> Text.of(value == 0 ? "Every frame" : Integer.toString(value))))
+                                .build())
 
                         .option(Option.<Float>createBuilder()
                                 .name(Text.literal("Minimal opacity"))

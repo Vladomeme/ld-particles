@@ -4,7 +4,8 @@
   "package": "net.vladomeme.main.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ParticleManagerMixin"
+    "ParticleManagerMixin",
+    "ParticleMixin"
   ],
   "injectors": {
     "defaultRequire": 1
