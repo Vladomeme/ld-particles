@@ -12,20 +12,9 @@ public class ParticleMixin implements ParticleDuck {
 
     @Shadow public float alpha;
 
-    @Unique boolean ldp$tracked = false;
     @Unique boolean ldp$hidden = false;
     @Unique float ldp$opacity;
     @Unique boolean ldp$useDefault = true;
-
-    @Override
-    public void ldp$track() {
-        this.ldp$tracked = true;
-    }
-
-    @Override
-    public boolean ldp$isTracked() {
-        return ldp$tracked;
-    }
 
     @Override
     public void ldp$hide() {
