@@ -14,7 +14,7 @@ public class LDPModMenu implements ModMenuApi {
         if (FabricLoader.getInstance().isModLoaded("yet_another_config_lib_v3")) {
             return LDPConfig.INSTANCE::create;
         }
-        return parent -> new AlertScreen(() -> Minecraft.getInstance().setScreen(parent),
+        return parent -> new AlertScreen(() -> Minecraft.getInstance().setScreenAndShow(parent),
                 Component.nullToEmpty("LD Particles"), Component.nullToEmpty("Mod requires YACL to be able to show the config."));
     }
 }

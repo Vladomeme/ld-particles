@@ -1,15 +1,15 @@
 package net.vladomeme.main.mixin;
 
-import net.minecraft.client.renderer.feature.ParticleFeatureRenderer;
+import net.minecraft.client.renderer.feature.QuadParticleFeatureRenderer;
 import net.vladomeme.main.config.LDPConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 
-@Mixin(ParticleFeatureRenderer.class)
-public class ParticleFeatureRendererMixin {
+@Mixin(QuadParticleFeatureRenderer.Submit.class)
+public class QuadParticleFeatureRendererSubmitMixin {
 
-    @ModifyVariable(method = "render", at = @At(value = "HEAD"), argsOnly = true)
+    @ModifyVariable(method = "<init>", at = @At(value = "HEAD"), argsOnly = true)
     private static boolean ldp$render$translucent(boolean translucent) {
         if (LDPConfig.INSTANCE.enabled) return true;
         return translucent;

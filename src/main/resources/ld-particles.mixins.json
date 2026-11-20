@@ -7,7 +7,7 @@
     "SingleQuadParticleMixin",
     "QuadParticleGroupMixin",
     "SingleQuadParticleLayerMixin",
-    "ParticleFeatureRendererMixin",
+    "QuadParticleFeatureRendererSubmitMixin",
     "ParticleEngineMixin"
   ],
   "injectors": {

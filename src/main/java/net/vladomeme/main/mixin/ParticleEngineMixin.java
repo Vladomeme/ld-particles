@@ -28,7 +28,7 @@ public abstract class ParticleEngineMixin {
 
 		ParticleDuck duck = (ParticleDuck) particle;
 
-		Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
+		Camera camera = Minecraft.getInstance().gameRenderer.mainCamera();
 		Vec3 cameraPos = camera.position();
 		double distanceX = Math.abs(particle.x - cameraPos.x);
 		double distanceY = Math.abs(particle.y - cameraPos.y) * config.horizontalScaleReverse;
