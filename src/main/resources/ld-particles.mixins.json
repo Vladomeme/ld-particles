@@ -4,8 +4,11 @@
   "package": "net.vladomeme.main.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "ParticleManagerMixin",
-    "ParticleMixin"
+    "BillboardParticleMixin",
+    "BillboardParticleRendererMixin",
+    "BillboardParticleRenderTypeMixin",
+    "BillboardParticleSubmittableMixin",
+    "ParticleManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

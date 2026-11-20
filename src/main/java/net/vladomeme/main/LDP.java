@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class LDP implements ClientModInitializer {
 
-    public static Logger LOGGER = LoggerFactory.getLogger("LDP");
+    public static final Logger LOGGER = LoggerFactory.getLogger("LDP");
 
     @Override
     public void onInitializeClient() {

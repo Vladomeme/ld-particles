@@ -1,13 +1,10 @@
 plugins {
-	id 'fabric-loom' version '1.8-SNAPSHOT'
+	id 'fabric-loom' version '1.19-SNAPSHOT'
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
 version = project.mod_version
 group = project.maven_group
-archivesBaseName = project.property("archives_base_name") + "-" + project.property("minecraft_version")
 
 loom {
 	accessWidenerPath = file("src/main/resources/ld-particles.accesswidener")
@@ -55,6 +52,14 @@ jar {
 	from("LICENSE") {
 		rename { "${it}_${project.archives_base_name}"}
 	}
+}
+
+remapJar {
+	archiveFileName = project.property("archives_base_name") + "-" + project.property("minecraft_version") + "-" + project.property("mod_version") + ".jar"
+}
+
+remapSourcesJar {
+	archiveFileName = project.property("archives_base_name") + "-" + project.property("minecraft_version") + "-" + project.property("mod_version") + "-sources.jar"
 }
 
 publishing {

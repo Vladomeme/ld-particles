@@ -1,14 +1,14 @@
 package net.vladomeme.main.mixin;
 
-import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.BillboardParticle;
 import net.vladomeme.main.ParticleDuck;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 
-@Mixin(Particle.class)
-public class ParticleMixin implements ParticleDuck {
+@Mixin(BillboardParticle.class)
+public class BillboardParticleMixin implements ParticleDuck {
 
     @Shadow public float alpha;
 
