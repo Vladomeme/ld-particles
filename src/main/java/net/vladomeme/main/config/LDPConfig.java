@@ -8,8 +8,8 @@ import dev.isxander.yacl3.api.OptionDescription;
 import dev.isxander.yacl3.api.YetAnotherConfigLib;
 import dev.isxander.yacl3.api.controller.*;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.text.Text;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -89,90 +89,90 @@ public class LDPConfig {
     public Screen create(Screen parent) {
         return YetAnotherConfigLib.createBuilder()
                 .save(this::write)
-                .title(Text.literal("LD Particles"))
+                .title(Component.literal("LD Particles"))
 
-                .category(ConfigCategory.createBuilder().name(Text.literal("General"))
+                .category(ConfigCategory.createBuilder().name(Component.literal("General"))
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Enable"))
+                                .name(Component.literal("Enable"))
                                 .binding(true, () -> enabled, newVal -> enabled = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Integer>createBuilder()
-                                .name(Text.literal("Refresh rate"))
-                                .description(OptionDescription.of(Text.literal("Number of frames between opacity updates.")))
+                                .name(Component.literal("Refresh rate"))
+                                .description(OptionDescription.of(Component.literal("Number of frames between opacity updates.")))
                                 .binding(0, () -> refreshRate, newVal -> refreshRate = newVal)
                                 .controller(option -> IntegerSliderControllerBuilder.create(option)
-                                        .range(0, 30).step(1).formatValue(value -> Text.of(value == 0 ? "Every frame" : Integer.toString(value))))
+                                        .range(0, 30).step(1).formatValue(value -> Component.nullToEmpty(value == 0 ? "Every frame" : Integer.toString(value))))
                                 .build())
 
                         .option(Option.<Float>createBuilder()
-                                .name(Text.literal("Minimal opacity"))
+                                .name(Component.literal("Minimal opacity"))
                                 .binding(0.2f, () -> minOpacity, newVal -> minOpacity = newVal)
                                 .controller(option -> FloatSliderControllerBuilder.create(option)
-                                        .range(0f, 1f).step(0.05f).formatValue(value -> Text.of(decimalFormat.format(value))))
+                                        .range(0f, 1f).step(0.05f).formatValue(value -> Component.nullToEmpty(decimalFormat.format(value))))
                                 .build())
 
                         .option(Option.<Float>createBuilder()
-                                .name(Text.literal("Maximum opacity"))
+                                .name(Component.literal("Maximum opacity"))
                                 .binding(1f, () -> maxOpacity, newVal -> maxOpacity = newVal)
                                 .controller(option -> FloatSliderControllerBuilder.create(option)
-                                        .range(0f, 1f).step(0.05f).formatValue(value -> Text.of(decimalFormat.format(value))))
+                                        .range(0f, 1f).step(0.05f).formatValue(value -> Component.nullToEmpty(decimalFormat.format(value))))
                                 .build())
 
                         .option(Option.<Double>createBuilder()
-                                .name(Text.literal("Fade start range"))
-                                .description(OptionDescription.of(Text.literal(
+                                .name(Component.literal("Fade start range"))
+                                .description(OptionDescription.of(Component.literal(
                                         "Required distance from camera to apply fade (at min opacity).\n" +
                                                 "Particles closer than this are prevented from rendering.")))
                                 .binding(1d, () -> fadeStartRange,
                                         newVal -> fadeStartRange = (newVal <= fadeEndRange ? newVal : Math.max(0d, fadeEndRange - 0.1d)))
                                 .controller(option -> DoubleFieldControllerBuilder.create(option)
-                                        .min(0d).formatValue(value -> Text.of(decimalFormat.format(value)))).build())
+                                        .min(0d).formatValue(value -> Component.nullToEmpty(decimalFormat.format(value)))).build())
 
                         .option(Option.<Double>createBuilder()
-                                .name(Text.literal("Fade end range"))
-                                .description(OptionDescription.of(Text.literal(
+                                .name(Component.literal("Fade end range"))
+                                .description(OptionDescription.of(Component.literal(
                                         "Particles further than this value are rendered at max opacity.")))
                                 .binding(3d, () -> fadeEndRange,
                                         newVal -> fadeEndRange = (newVal >= fadeStartRange ? newVal : fadeStartRange + 0.1d))
                                 .controller(option -> DoubleFieldControllerBuilder.create(option)
-                                        .min(0d).formatValue(value -> Text.of(decimalFormat.format(value)))).build())
+                                        .min(0d).formatValue(value -> Component.nullToEmpty(decimalFormat.format(value)))).build())
 
                         .option(Option.<Double>createBuilder()
-                                .name(Text.literal("Horizontal scaling"))
-                                .description(OptionDescription.of(Text.literal(
+                                .name(Component.literal("Horizontal scaling"))
+                                .description(OptionDescription.of(Component.literal(
                                         "Scaling for fade range on the Y axis.")))
                                 .binding(1d, () -> horizontalScale, newVal -> horizontalScale = newVal)
                                 .controller(option -> DoubleSliderControllerBuilder.create(option)
-                                        .range(0d, 2d).step(0.05d).formatValue(value -> Text.of(decimalFormat.format(value)))).build())
+                                        .range(0d, 2d).step(0.05d).formatValue(value -> Component.nullToEmpty(decimalFormat.format(value)))).build())
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Render nearby particles"))
-                                .description(OptionDescription.of(Text.literal(
+                                .name(Component.literal("Render nearby particles"))
+                                .description(OptionDescription.of(Component.literal(
                                         "Particles within fade start range are rendered at minimal opacity.")))
                                 .binding(false, () -> renderNearbyParticles, newVal -> renderNearbyParticles = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Enable in third person"))
+                                .name(Component.literal("Enable in third person"))
                                 .binding(false, () -> useInThirdPerson, newVal -> useInThirdPerson = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Boolean>createBuilder()
-                                .name(Text.literal("Limit effect range"))
-                                .description(OptionDescription.of(Text.literal(
+                                .name(Component.literal("Limit effect range"))
+                                .description(OptionDescription.of(Component.literal(
                                         "Particles outside of effect range (lower option) ignore max opacity option.")))
                                 .binding(false, () -> limitEffectRange, newVal -> limitEffectRange = newVal)
                                 .controller(TickBoxControllerBuilder::create).build())
 
                         .option(Option.<Double>createBuilder()
-                                .name(Text.literal("Effect range"))
-                                .description(OptionDescription.of(Text.literal(
+                                .name(Component.literal("Effect range"))
+                                .description(OptionDescription.of(Component.literal(
                                         "If limit (above option) is enabled, particles outside of this range (planar) would ignore max opacity option.")))
                                 .binding(10d, () -> effectRange, newVal -> effectRange = newVal)
                                 .controller(option -> DoubleFieldControllerBuilder.create(option)
-                                        .min(0d).formatValue(value -> Text.of(decimalFormat.format(value)))).build())
+                                        .min(0d).formatValue(value -> Component.nullToEmpty(decimalFormat.format(value)))).build())
                         .build())
                 .build()
                 .generateScreen(parent);

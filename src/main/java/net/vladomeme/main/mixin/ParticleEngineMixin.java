@@ -1,11 +1,11 @@
 package net.vladomeme.main.mixin;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.particle.BillboardParticle;
+import net.minecraft.client.Camera;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.client.render.*;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.particle.SingleQuadParticle;
+import net.minecraft.world.phys.Vec3;
 import net.vladomeme.main.ParticleDuck;
 import net.vladomeme.main.config.LDPConfig;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,22 +14,22 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ParticleManager.class)
-public abstract class ParticleManagerMixin {
+@Mixin(ParticleEngine.class)
+public abstract class ParticleEngineMixin {
 
 	@Unique final LDPConfig config = LDPConfig.INSTANCE;
 
 	//Set opacity for newly added particles if non-instant refresh rate is used
-	@Inject(method = "addParticle(Lnet/minecraft/client/particle/Particle;)V", at = @At(value = "HEAD"))
-	private void ldp$addParticle(Particle p, CallbackInfo ci) {
+	@Inject(method = "add(Lnet/minecraft/client/particle/Particle;)V", at = @At(value = "HEAD"))
+	private void ldp$add(Particle p, CallbackInfo ci) {
 		if (!config.enabled || config.refreshRate == 0) return;
 
-		if (!(p instanceof BillboardParticle particle)) return;
+		if (!(p instanceof SingleQuadParticle particle)) return;
 
 		ParticleDuck duck = (ParticleDuck) particle;
 
-		Camera camera = MinecraftClient.getInstance().gameRenderer.getCamera();
-		Vec3d cameraPos = camera.getCameraPos();
+		Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
+		Vec3 cameraPos = camera.position();
 		double distanceX = Math.abs(particle.x - cameraPos.x);
 		double distanceY = Math.abs(particle.y - cameraPos.y) * config.horizontalScaleReverse;
 		double distanceZ = Math.abs(particle.z - cameraPos.z);

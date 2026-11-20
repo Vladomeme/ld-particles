@@ -30,8 +30,7 @@
   "depends": {
     "yet_another_config_lib_v3": "*",
     "fabricloader": ">=0.14.21",
-    "fabric": "*",
-    "minecraft": "~1.21.1",
-    "java": ">=17"
+    "fabric-api": "*",
+    "minecraft": "~26.1"
   }
 }
